@@ -35,8 +35,27 @@ class Spider(scrapy.Spider):
         item = Music163SpiderItem()
         lyrics_1 = response.selector.xpath('//div[@id="lyric-content"]/text()').extract()
         lyrics_2 = response.selector.xpath('//div[@id="flag_more"]/text()').extract()
-        item['singer'] = response.selector.xpath('//div[@class="cnt"]/p/span/a/text()').extract_first()
-        item['song_name'] = response.selector.xpath('//em[@class="f-ff2"]/text()').extract_first()
-        item['lyrics'] = lyrics_1 + lyrics_2
-        item['tags'] = ','.join(tags)
+        item['b_singer'] = response.selector.xpath('//div[@class="cnt"]/p/span/a/text()').extract_first()
+        item['a_song_name'] = response.selector.xpath('//em[@class="f-ff2"]/text()').extract_first()
+        item['f_lyrics'] = lyrics_1 + lyrics_2
+        item['e_tags'] = ','.join(tags)
+        if item['f_lyrics'] is None or item['b_singer'] is None \
+                or item['a_song_name'] is None or item['e_tags'] is None:
+            return None
+        item['c_composer'] = process_lyrics(item['f_lyrics'], '作曲')
+        item['d_lyricist'] = process_lyrics(item['f_lyrics'], '作词')
+        item['f_lyrics'] = list(filter(lambda x: x.find(':') == -1 and x.find('：') == -1, item['f_lyrics']))
+        if item['f_lyrics'] is None or len(item['f_lyrics']) < 10:
+            return None
+        item['f_lyrics'] = ','.join(item['f_lyrics'])
         yield item
+
+
+def process_lyrics(lyrics, key):
+    temp = list(filter(lambda x: x.find(key) != -1 and (x.find(':') != -1 or x.find('：') != -1), lyrics))
+    if temp is not None and len(temp) > 0:
+        if temp[0].find(':') != -1:
+            return temp[0].split(':')[-1].strip()
+        elif temp[0].find('：') != -1:
+            return temp[0].split('：')[-1].strip()
+    return '-'

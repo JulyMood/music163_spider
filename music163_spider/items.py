@@ -10,7 +10,9 @@ import scrapy
 
 class Music163SpiderItem(scrapy.Item):
     # define the fields for your item here like:
-    singer = scrapy.Field()
-    song_name = scrapy.Field()
-    tags = scrapy.Field()
-    lyrics = scrapy.Field()
+    b_singer = scrapy.Field()
+    a_song_name = scrapy.Field()
+    e_tags = scrapy.Field()
+    f_lyrics = scrapy.Field()
+    c_composer = scrapy.Field()
+    d_lyricist = scrapy.Field()
