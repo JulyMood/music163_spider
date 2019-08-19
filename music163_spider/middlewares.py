@@ -130,7 +130,8 @@ class FundscrapyDownloaderMiddleware(object):
         # self.page = await browser.newPage()
 
     async def getbrowser(self):
-        self.browser = await pyppeteer.launch(executablePath=executable_path)
+        self.browser = await pyppeteer.launch({'headless': True, 'args': ['--no-sandbox'], 'dumpio': True},
+                                              executablePath=executable_path, logLevel='WARNING')
         self.page = await self.browser.newPage()
         # return await pyppeteer.launch()
 
